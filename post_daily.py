@@ -24,7 +24,7 @@ FONT_PATH = "fonts/Vazirmatn-Bold.ttf"
 USED_LOG_PATH = "used_log.json"
 
 # متن ثابتی که هر روز همراه نام روز هفته نوشته می‌شود
-FIXED_CAPTION = "صبح بخیر ایران"
+FIXED_CAPTION = "صبح بخیر ایران , صبح بخیر ایرانی"
 
 # نگاشت نام روزهای هفته به فرم محاوره‌ای خواسته‌شده
 WEEKDAY_COLLOQUIAL = {
