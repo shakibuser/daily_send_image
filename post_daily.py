@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-انتخاب تصادفی یک عکس از پوشه images، افزودن کپشن ثابت + نام روز هفته
-زیر عکس، و ارسال به کانال تلگرام.
+انتخاب تصادفی یک عکس بکر (بدون هیچ تغییری) از پوشه images، و ارسال آن به
+همراه کپشن متنی (نه نوشته‌شده روی عکس) به کانال تلگرام.
 اجرا هر روز ساعت ۶ صبح به وقت تهران توسط GitHub Actions.
 """
 
@@ -15,12 +15,10 @@ from zoneinfo import ZoneInfo
 
 import requests
 import jdatetime
-from PIL import Image, ImageDraw, ImageFont, ImageSequence
 
 # ---------- تنظیمات قابل ویرایش ----------
 
 IMAGES_DIR = "images"
-FONT_PATH = "fonts/Vazirmatn-Bold.ttf"
 USED_LOG_PATH = "used_log.json"
 
 # متن ثابتی که هر روز همراه نام روز هفته نوشته می‌شود
@@ -114,86 +112,6 @@ def pick_random_image() -> str:
     return os.path.join(IMAGES_DIR, chosen)
 
 
-def build_caption_band(width: int, caption_lines: list[str]) -> Image.Image:
-    """ساخت نوار مستطیلی مشکی با متن فارسی رویش (ارتفاع بر اساس تعداد خطوط محاسبه می‌شود)."""
-    font_size = max(int(width * 0.032), 26)
-    font = ImageFont.truetype(FONT_PATH, font_size)
-    spacing = int(font_size * 0.45)
-    padding = int(font_size * 0.6)
-
-    probe = Image.new("RGB", (width, 10))
-    draw = ImageDraw.Draw(probe)
-
-    line_heights = []
-    for line in caption_lines:
-        bbox = draw.textbbox((0, 0), line, font=font, direction="rtl")
-        line_heights.append(bbox[3] - bbox[1])
-
-    band_height = 2 * padding + sum(line_heights) + spacing * (len(caption_lines) - 1)
-
-    band = Image.new("RGB", (width, band_height), (20, 20, 20))
-    draw = ImageDraw.Draw(band)
-
-    y = padding
-    for line, line_h in zip(caption_lines, line_heights):
-        draw.text(
-            (width // 2, y),
-            line,
-            font=font,
-            fill=(255, 255, 255),
-            anchor="ma",
-            direction="rtl",
-        )
-        y += line_h + spacing
-
-    return band
-
-
-def build_captioned_static(image_path: str, caption_lines: list[str]) -> str:
-    """افزودن نوار کپشن زیر یک عکس ساده (jpg/png/webp) و ذخیره خروجی."""
-    img = Image.open(image_path).convert("RGB")
-    width, height = img.size
-    band = build_caption_band(width, caption_lines)
-    band_height = band.height
-
-    new_img = Image.new("RGB", (width, height + band_height), (20, 20, 20))
-    new_img.paste(img, (0, 0))
-    new_img.paste(band, (0, height))
-
-    out_path = "output.jpg"
-    new_img.save(out_path, quality=92)
-    return out_path
-
-
-def build_captioned_gif(image_path: str, caption_lines: list[str]) -> str:
-    """افزودن نوار کپشن زیر تمام فریم‌های یک گیف متحرک، با حفظ سرعت و تعداد تکرار."""
-    src = Image.open(image_path)
-    width, height = src.size
-    band = build_caption_band(width, caption_lines).convert("RGBA")
-    band_height = band.height
-
-    out_frames = []
-    durations = []
-    for frame in ImageSequence.Iterator(src):
-        rgba_frame = frame.convert("RGBA")
-        canvas = Image.new("RGBA", (width, height + band_height), (20, 20, 20, 255))
-        canvas.paste(rgba_frame, (0, 0))
-        canvas.paste(band, (0, height))
-        out_frames.append(canvas.convert("RGB"))
-        durations.append(frame.info.get("duration", 100))
-
-    out_path = "output.gif"
-    out_frames[0].save(
-        out_path,
-        save_all=True,
-        append_images=out_frames[1:],
-        duration=durations,
-        loop=src.info.get("loop", 0),
-        disposal=2,
-    )
-    return out_path
-
-
 def send_to_telegram(file_path: str, caption_text: str) -> None:
     is_gif = file_path.lower().endswith(".gif")
     method = "sendAnimation" if is_gif else "sendPhoto"
@@ -228,16 +146,8 @@ def main():
     caption_text = "\n".join(caption_lines)
 
     image_path = pick_random_image()
-    is_gif = image_path.lower().endswith(".gif") and getattr(
-        Image.open(image_path), "is_animated", False
-    )
-
-    if is_gif:
-        out_path = build_captioned_gif(image_path, caption_lines)
-    else:
-        out_path = build_captioned_static(image_path, caption_lines)
-
-    send_to_telegram(out_path, caption_text)
+    # عکس کاملاً بکر و بدون تغییر ارسال می‌شود؛ کپشن فقط به‌صورت متن تلگرام درج می‌شود.
+    send_to_telegram(image_path, caption_text)
 
 
 if __name__ == "__main__":
