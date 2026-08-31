@@ -24,6 +24,11 @@ USED_LOG_PATH = "used_log.json"
 # متن ثابتی که هر روز همراه نام روز هفته نوشته می‌شود
 FIXED_CAPTION = "صبح بخیر ایران , صبح بخیر ایرانی"
 
+# خط آدرس کانال که همیشه در انتهای کپشن، بعد از یک خط خالی، اضافه می‌شود
+# با نویسه LRM (‎\u200e‎) شروع می‌شود تا کل خط از چپ به راست نمایش داده شود
+# (اول آیدی انگلیسی، بعد بقیه متن) حتی در اپ‌هایی که پیش‌فرض راست‌به‌چپ هستند.
+CHANNEL_LINE = "\u200esaba_rasanehh@ || کانال تلگرام صبا رسانه"
+
 # نگاشت نام روزهای هفته به فرم محاوره‌ای خواسته‌شده
 WEEKDAY_COLLOQUIAL = {
     "Saturday": "شنبه‌تون",
@@ -142,6 +147,10 @@ def main():
     caption_lines = [FIXED_CAPTION, f"صبح {colloquial} بخیر", date_line]
     if occasion_line:
         caption_lines.append(occasion_line)
+
+    # یک خط خالی و سپس آدرس کانال در انتهای کپشن
+    caption_lines.append("")
+    caption_lines.append(CHANNEL_LINE)
 
     caption_text = "\n".join(caption_lines)
 
