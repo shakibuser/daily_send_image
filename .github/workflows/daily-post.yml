@@ -7,7 +7,7 @@ on:
   workflow_dispatch: {}   # امکان اجرای دستی از تب Actions برای تست
 
 permissions:
-  contents: write   # برای commit کردن فایل used_log.json (ردیابی عکس‌های استفاده‌شده)
+  contents: write   # برای commit کردن used_log.json و caption_state.json
 
 jobs:
   post:
@@ -30,10 +30,10 @@ jobs:
           TELEGRAM_CHAT_ID: "@saba_rasanehh"
         run: python post_daily.py
 
-      - name: Commit updated used_log.json
+      - name: Commit updated state files
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add used_log.json
-          git diff --cached --quiet || git commit -m "update used images log [skip ci]"
+          git add used_log.json caption_state.json
+          git diff --cached --quiet || git commit -m "update daily state [skip ci]"
           git push
