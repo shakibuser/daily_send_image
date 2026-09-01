@@ -1,5 +1,5 @@
 {
-  "last_mood": "hope",
+  "last_mood": "humor",
   "used": {
     "literary": [
       2
@@ -9,6 +9,9 @@
     ],
     "hope": [
       0
+    ],
+    "humor": [
+      2
     ]
   }
 }
