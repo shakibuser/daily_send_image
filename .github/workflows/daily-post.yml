@@ -3,7 +3,7 @@ name: Daily Telegram Post
 on:
   schedule:
     # 02:30 UTC = 06:00 به وقت تهران (ایران از سال 1401 دیگر ساعت تابستانی ندارد)
-    - cron: "*/10 * * * *"
+    - cron: "30 2 * * *"
   workflow_dispatch: {}   # امکان اجرای دستی از تب Actions برای تست
 
 permissions:
