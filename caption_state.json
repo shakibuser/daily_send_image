@@ -1,7 +1,10 @@
 {
-  "last_mood": "literary",
+  "last_mood": "reflective",
   "used": {
     "literary": [
+      2
+    ],
+    "reflective": [
       2
     ]
   }
