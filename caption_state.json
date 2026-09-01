@@ -1,10 +1,11 @@
 {
-  "last_mood": "hope",
+  "last_mood": "reflective",
   "used": {
     "literary": [
       2
     ],
     "reflective": [
+      1,
       2
     ],
     "hope": [
