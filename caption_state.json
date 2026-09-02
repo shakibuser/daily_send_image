@@ -19,5 +19,21 @@
     "retiree": [
       2
     ]
+  },
+  "opening": {
+    "last_category": "hope",
+    "used": {
+      "hope": [
+        75
+      ]
+    }
+  },
+  "closing": {
+    "last_category": "quotes",
+    "used": {
+      "quotes": [
+        42
+      ]
+    }
   }
 }
