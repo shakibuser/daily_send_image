@@ -3,7 +3,15 @@
 """
 انتخاب تصادفی یک عکس بکر (بدون هیچ تغییری) از پوشه images، و ارسال آن به
 همراه یک کپشن متنی گرم و متنوع (نه نوشته‌شده روی عکس) به کانال تلگرام.
-اجرا هر روز ساعت ۶ صبح به وقت تهران توسط GitHub Actions.
+
+کپشن از سه بخش تشکیل شده (با یک سطر خالی بین‌شان):
+  ۱) پیام صبحگاهی
+  ۲) تاریخ شمسی/قمری و مناسبت روز
+  ۳) پیام دوم + امضای ثابت کانال
+
+پیام‌های بخش ۱ و ۳ از فایل‌های متنی ساده در پوشه‌ی messages/ خوانده می‌شوند،
+تا اضافه‌کردن جمله‌ی جدید فقط با اضافه‌کردن یک خط به یک فایل متنی ممکن باشد
+(بدون نیاز به دست‌زدن به کد پایتون).
 """
 
 import os
@@ -22,6 +30,9 @@ IMAGES_DIR = "images"
 USED_LOG_PATH = "used_log.json"
 CAPTION_STATE_PATH = "caption_state.json"
 
+OPENING_MESSAGES_DIR = "messages/opening"   # پیام اول (صبحگاهی)
+CLOSING_MESSAGES_DIR = "messages/closing"   # پیام دوم (انگیزشی/مطالبه‌گری/سخن بزرگان/...)
+
 # آدرس API رایگان تقویم شمسی (بدون نیاز به کلید) برای دریافت مناسبت روز و تاریخ قمری
 CALENDAR_API_URL = "https://pnldev.com/api/calender"
 
@@ -32,105 +43,6 @@ HIJRI_MONTHS_FA = [
     "محرم", "صفر", "ربیع‌الاول", "ربیع‌الثانی", "جمادی‌الاول", "جمادی‌الثانی",
     "رجب", "شعبان", "رمضان", "شوال", "ذوالقعده", "ذوالحجه",
 ]
-
-# ---------- استخر جمله‌های روزانه (برای اینکه پیام هر روز تکراری نباشد) ----------
-# هر «حال‌وهوا» چند نسخه دارد؛ هر روز یک حال‌وهوا (متفاوت از دیروز) و یک نسخه‌ی
-# تصادفیِ تازه از آن انتخاب می‌شود، تا وقتی همه‌ی نسخه‌ها یک‌بار استفاده شوند.
-
-CAPTION_POOL = {
-    # یک روز امیدبخش
-    "hope": [
-        {
-            "opening": "صبح بخیر به مردمی که هنوز امید را، حتی لابه‌لای سختی‌های زندگی، زمین نگذاشته‌اند.",
-            "wish_intro": "امروز را با یک آرزوی ساده شروع کنیم:",
-            "wish_text": "دل‌ها آرام‌تر، سفره‌ها پُرتر و فرداها روشن‌تر از امروز باشد.",
-        },
-        {
-            "opening": "صبح بخیر به همه‌ی کسانی که با وجود خستگی دیروز، امروز را دوباره از نو شروع می‌کنند.",
-            "wish_intro": "بیایید امروز را با این نیت شروع کنیم:",
-            "wish_text": "هر قدمی که برمی‌داریم، یک قدم به آرامش نزدیک‌تر باشد.",
-        },
-        {
-            "opening": "صبح بخیر به شهری که هر روز صبح، دوباره بلند می‌شود و ادامه می‌دهد.",
-            "wish_intro": "امروز آرزو می‌کنیم:",
-            "wish_text": "اتفاقی کوچک، همین امروز، دل‌تان را گرم کند.",
-        },
-    ],
-    # یک روز ادبی
-    "literary": [
-        {
-            "opening": "صبح، مثل برگی سفید است که هنوز هیچ‌کس رویش چیزی ننوشته؛ بگذارید امروز خوب بنویسیمش.",
-            "wish_intro": "با خودمان عهد کنیم:",
-            "wish_text": "هر طلوع، دعوتی‌ست دوباره برای زیستن؛ امروز را با آرامش بپذیریم.",
-        },
-        {
-            "opening": "در میان هیاهوی صبح، صدای آرام دل‌تان را گم نکنید.",
-            "wish_intro": "امروز به یاد داشته باشیم:",
-            "wish_text": "زندگی از همین لحظه‌های ساده‌ی صبحگاهی ساخته می‌شود.",
-        },
-        {
-            "opening": "آفتاب که بالا می‌آید، انگار زمین دوباره نفس می‌کشد.",
-            "wish_intro": "آرزوی امروزمان این باشد:",
-            "wish_text": "دل‌مان به‌اندازه‌ی این آسمان، روشن و باز بماند.",
-        },
-    ],
-    # یک روز طنز ظریف
-    "humor": [
-        {
-            "opening": "صبح بخیر به همه‌ی کسانی که هنوز باور نکرده‌اند تعطیلات تمام شده.",
-            "wish_intro": "امروز را این‌طور شروع کنیم:",
-            "wish_text": "انگار چای‌مان هنوز داغ است، نه سرد؛ باقی‌اش را هم درست می‌کنیم!",
-        },
-        {
-            "opening": "صبح بخیر به آن‌هایی که زنگ گوشی را ده بار قطع کردند و بالاخره بیدار شدند.",
-            "wish_intro": "قول امروزمان این است:",
-            "wish_text": "هرچه شد، حداقل قهوه‌مان درست باشد؛ بقیه‌اش را درست می‌کنیم.",
-        },
-        {
-            "opening": "صبح بخیر به همه‌ی رفقایی که صبح‌ها با هزار بهانه از رختخواب جدا می‌شوند.",
-            "wish_intro": "امروز کمی آسان‌تر بگیریم:",
-            "wish_text": "دنیا قرار نیست همین امروز درست شود، ولی می‌تواند کمی بهتر شود.",
-        },
-    ],
-    # یک روز مخصوص بازنشسته‌ها
-    "retiree": [
-        {
-            "opening": "صبح بخیر به آن‌ها که یک عمر برای دیگران وقت گذاشتند و حالا وقت‌شان برای خودشان است.",
-            "wish_intro": "امروز آرزو می‌کنیم:",
-            "wish_text": "آرامش امروزتان را با خیال راحت زندگی کنید؛ به‌اندازه‌ی کافی زحمت کشیده‌اید.",
-        },
-        {
-            "opening": "صبح بخیر به دستانی که سال‌ها زحمت کشیدند و حالا وقت آرام‌گرفتن‌شان است.",
-            "wish_intro": "امیدواریم امروز داشته باشید:",
-            "wish_text": "لحظه‌ای برای نشستن کنار پنجره و نگاه‌کردن به آفتاب.",
-        },
-        {
-            "opening": "صبح بخیر به تجربه‌ها و خاطره‌هایی که هر بازنشسته، سرمایه‌ی بی‌ادعای این مملکت‌اند.",
-            "wish_intro": "امروز به یاد داشته باشید:",
-            "wish_text": "قدر آرامش امروزتان را بدانید؛ حق‌تان بود.",
-        },
-    ],
-    # یک روز با یک جمله کوتاه تأمل‌برانگیز
-    "reflective": [
-        {
-            "opening": "هیچ صبحی شبیه صبح دیگر نیست؛ امروز را با چشمی تازه ببینید.",
-            "wish_intro": "کافی‌ست امروز:",
-            "wish_text": "یک نفس عمیق بکشید و به خودتان یادآوری کنید که هنوز اینجایید.",
-        },
-        {
-            "opening": "گاهی همین که از خواب بیدار شده‌ای، خودش یک پیروزی کوچک است.",
-            "wish_intro": "بگذارید امروز:",
-            "wish_text": "خودتان اولین کسی باشید که به خودتان لبخند می‌زنید.",
-        },
-        {
-            "opening": "روزها از پی هم می‌آیند، اما هر کدام فرصتی تازه‌اند.",
-            "wish_intro": "امروز را طوری زندگی کنیم:",
-            "wish_text": "که فردا دل‌مان برایش تنگ شود.",
-        },
-    ],
-}
-
-MOODS = list(CAPTION_POOL.keys())
 
 # خط پایانی ثابت (همیشه یکسان، امضای روزانه کانال)
 CLOSING_LINE = "صبح‌تان بخیر، تنتان سالم و دل‌تان گرم ❤️"
@@ -177,7 +89,7 @@ def fetch_calendar_info(j_now: jdatetime.datetime) -> dict:
 
 
 def build_date_block(j_now: jdatetime.datetime, calendar_info: dict) -> list[str]:
-    """ساخت خطوط «امروز:» شامل تاریخ شمسی، تاریخ قمری، و مناسبت (در صورت وجود)."""
+    """ساخت خطوط بخش دوم کپشن: تاریخ شمسی، تاریخ قمری، و مناسبت (در صورت وجود)."""
     weekday_fa = j_now.strftime("%A")
     month_fa = jdatetime.date.j_months_fa[j_now.month - 1]
     day_fa = to_persian_digits(j_now.day)
@@ -201,11 +113,42 @@ def build_date_block(j_now: jdatetime.datetime, calendar_info: dict) -> list[str
     return lines
 
 
+# ---------- بارگذاری استخر پیام‌ها از فایل‌های متنی ساده ----------
+#
+# ساختار پوشه‌ها:
+#   messages/opening/*.txt   -> هر فایل یک «حال‌وهوا»ی پیام اول (مثلاً hope.txt)
+#   messages/closing/*.txt   -> هر فایل یک «دسته» از پیام دوم (مثلاً motivational.txt)
+#
+# داخل هر فایل: هر خط = یک پیام. خط‌های خالی و خط‌هایی که با # شروع می‌شوند
+# (توضیح/کامنت) نادیده گرفته می‌شوند. برای اضافه‌کردن پیام جدید، کافی است یک
+# خط جدید به فایل مربوطه اضافه شود.
+
+
+def load_message_pool(directory: str) -> dict:
+    """خواندن همه‌ی فایل‌های .txt یک پوشه؛ خروجی: {نام_دسته: [پیام‌ها]}."""
+    pool = {}
+    if not os.path.isdir(directory):
+        return pool
+    for filename in sorted(os.listdir(directory)):
+        if not filename.endswith(".txt"):
+            continue
+        category = filename[:-4]
+        path = os.path.join(directory, filename)
+        with open(path, "r", encoding="utf-8") as f:
+            lines = [
+                line.strip() for line in f
+                if line.strip() and not line.strip().startswith("#")
+            ]
+        if lines:
+            pool[category] = lines
+    return pool
+
+
 def load_caption_state() -> dict:
     if os.path.exists(CAPTION_STATE_PATH):
         with open(CAPTION_STATE_PATH, "r", encoding="utf-8") as f:
             return json.load(f)
-    return {"last_mood": None, "used": {}}
+    return {}
 
 
 def save_caption_state(state: dict) -> None:
@@ -213,32 +156,35 @@ def save_caption_state(state: dict) -> None:
         json.dump(state, f, ensure_ascii=False, indent=2)
 
 
-def pick_caption_pair() -> dict:
+def pick_message(pool: dict, state: dict, state_key: str) -> str:
     """
-    انتخاب یک حال‌وهوای متفاوت از روز قبل (امیدبخش/ادبی/طنز/بازنشسته/تأمل‌برانگیز)
-    و یک نسخه‌ی تصادفیِ استفاده‌نشده از آن، تا کپشن هر روز واقعاً تازه باشد.
+    از یک استخر دسته‌بندی‌شده (مثل پیام‌های صبحگاهی یا پیام‌های پایانی)، یک
+    دسته‌ی متفاوت از دیروز و یک پیام تصادفیِ استفاده‌نشده از آن انتخاب می‌کند.
+    state_key باعث می‌شود پیام اول و پیام دوم کاملاً مستقل از هم بچرخند.
     """
-    state = load_caption_state()
-    last_mood = state.get("last_mood")
+    section_state = state.setdefault(state_key, {"last_category": None, "used": {}})
+    categories = list(pool.keys())
+    if not categories:
+        return ""
 
-    mood_candidates = [m for m in MOODS if m != last_mood] or MOODS
-    mood = random.choice(mood_candidates)
+    last_category = section_state.get("last_category")
+    candidates = [c for c in categories if c != last_category] or categories
+    category = random.choice(candidates)
 
-    used = set(state.get("used", {}).get(mood, []))
-    pool = CAPTION_POOL[mood]
-    remaining = [i for i in range(len(pool)) if i not in used]
+    used = set(section_state.get("used", {}).get(category, []))
+    messages = pool[category]
+    remaining = [i for i in range(len(messages)) if i not in used]
     if not remaining:
         used = set()
-        remaining = list(range(len(pool)))
+        remaining = list(range(len(messages)))
 
     idx = random.choice(remaining)
     used.add(idx)
 
-    state.setdefault("used", {})[mood] = sorted(used)
-    state["last_mood"] = mood
-    save_caption_state(state)
+    section_state.setdefault("used", {})[category] = sorted(used)
+    section_state["last_category"] = category
 
-    return pool[idx]
+    return messages[idx]
 
 
 def pick_random_image() -> str:
@@ -291,14 +237,34 @@ def send_to_telegram(file_path: str, caption_text: str) -> None:
 def build_caption_text() -> str:
     j_now = get_jalali_now()
     calendar_info = fetch_calendar_info(j_now)
-    pair = pick_caption_pair()
 
-    lines = ["☀️ صبح بخیر ایران؛", pair["opening"]]
-    lines += build_date_block(j_now, calendar_info)
-    lines += [pair["wish_intro"], pair["wish_text"], CLOSING_LINE]
-    lines += ["", CHANNEL_ID_LINE, CHANNEL_LINK_LINE]
+    opening_pool = load_message_pool(OPENING_MESSAGES_DIR)
+    closing_pool = load_message_pool(CLOSING_MESSAGES_DIR)
 
-    return "\n".join(lines)
+    state = load_caption_state()
+    opening_message = pick_message(opening_pool, state, "opening")
+    closing_message = pick_message(closing_pool, state, "closing")
+    save_caption_state(state)
+
+    # بخش ۱: پیام صبحگاهی
+    section1 = ["☀️ صبح بخیر ایران؛"]
+    if opening_message:
+        section1.append(opening_message)
+
+    # بخش ۲: تاریخ و مناسبت
+    section2 = build_date_block(j_now, calendar_info)
+
+    # بخش ۳: پیام دوم + امضای کانال
+    section3 = []
+    if closing_message:
+        section3.append(closing_message)
+    section3.append(CLOSING_LINE)
+    section3.append("")
+    section3.append(CHANNEL_ID_LINE)
+    section3.append(CHANNEL_LINK_LINE)
+
+    full_text = "\n".join(section1) + "\n\n" + "\n".join(section2) + "\n\n" + "\n".join(section3)
+    return full_text
 
 
 def main():
