@@ -21,18 +21,24 @@
     ]
   },
   "opening": {
-    "last_category": "hope",
+    "last_category": "literary",
     "used": {
       "hope": [
         75
+      ],
+      "literary": [
+        22
       ]
     }
   },
   "closing": {
-    "last_category": "quotes",
+    "last_category": "advocacy",
     "used": {
       "quotes": [
         42
+      ],
+      "advocacy": [
+        52
       ]
     }
   }
