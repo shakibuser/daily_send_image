@@ -21,21 +21,25 @@
     ]
   },
   "opening": {
-    "last_category": "literary",
+    "last_category": "retiree",
     "used": {
       "hope": [
         75
       ],
       "literary": [
         22
+      ],
+      "retiree": [
+        5
       ]
     }
   },
   "closing": {
-    "last_category": "advocacy",
+    "last_category": "quotes",
     "used": {
       "quotes": [
-        42
+        42,
+        54
       ],
       "advocacy": [
         52
