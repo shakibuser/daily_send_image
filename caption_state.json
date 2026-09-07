@@ -21,14 +21,15 @@
     ]
   },
   "opening": {
-    "last_category": "reflective",
+    "last_category": "literary",
     "used": {
       "hope": [
         75,
         82
       ],
       "literary": [
-        22
+        22,
+        50
       ],
       "retiree": [
         5
@@ -39,7 +40,7 @@
     }
   },
   "closing": {
-    "last_category": "quotes",
+    "last_category": "motivational",
     "used": {
       "quotes": [
         42,
@@ -50,6 +51,7 @@
         52
       ],
       "motivational": [
+        12,
         59
       ]
     }
