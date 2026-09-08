@@ -21,7 +21,7 @@
     ]
   },
   "opening": {
-    "last_category": "literary",
+    "last_category": "retiree",
     "used": {
       "hope": [
         75,
@@ -32,7 +32,8 @@
         50
       ],
       "retiree": [
-        5
+        5,
+        11
       ],
       "reflective": [
         89
@@ -40,7 +41,7 @@
     }
   },
   "closing": {
-    "last_category": "motivational",
+    "last_category": "advocacy",
     "used": {
       "quotes": [
         42,
@@ -48,7 +49,8 @@
         94
       ],
       "advocacy": [
-        52
+        52,
+        79
       ],
       "motivational": [
         12,
