@@ -21,7 +21,7 @@
     ]
   },
   "opening": {
-    "last_category": "retiree",
+    "last_category": "humor",
     "used": {
       "hope": [
         75,
@@ -37,13 +37,17 @@
       ],
       "reflective": [
         89
+      ],
+      "humor": [
+        14
       ]
     }
   },
   "closing": {
-    "last_category": "advocacy",
+    "last_category": "quotes",
     "used": {
       "quotes": [
+        17,
         42,
         54,
         94
