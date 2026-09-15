@@ -21,7 +21,7 @@
     ]
   },
   "opening": {
-    "last_category": "reflective",
+    "last_category": "humor",
     "used": {
       "hope": [
         75,
@@ -44,12 +44,13 @@
         89
       ],
       "humor": [
-        14
+        14,
+        21
       ]
     }
   },
   "closing": {
-    "last_category": "quotes",
+    "last_category": "motivational",
     "used": {
       "quotes": [
         17,
@@ -68,7 +69,8 @@
         12,
         14,
         50,
-        59
+        59,
+        69
       ]
     }
   }
