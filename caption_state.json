@@ -21,7 +21,7 @@
     ]
   },
   "opening": {
-    "last_category": "humor",
+    "last_category": "retiree",
     "used": {
       "hope": [
         75,
@@ -37,6 +37,7 @@
         5,
         8,
         11,
+        33,
         103
       ],
       "reflective": [
@@ -50,12 +51,13 @@
     }
   },
   "closing": {
-    "last_category": "motivational",
+    "last_category": "quotes",
     "used": {
       "quotes": [
         17,
         42,
         54,
+        56,
         60,
         90,
         94
