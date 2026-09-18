@@ -21,7 +21,7 @@
     ]
   },
   "opening": {
-    "last_category": "hope",
+    "last_category": "retiree",
     "used": {
       "hope": [
         75,
@@ -38,6 +38,7 @@
         5,
         8,
         11,
+        16,
         33,
         103
       ],
@@ -52,7 +53,7 @@
     }
   },
   "closing": {
-    "last_category": "advocacy",
+    "last_category": "quotes",
     "used": {
       "quotes": [
         17,
@@ -61,7 +62,8 @@
         56,
         60,
         90,
-        94
+        94,
+        103
       ],
       "advocacy": [
         32,
