@@ -21,7 +21,7 @@
     ]
   },
   "opening": {
-    "last_category": "hope",
+    "last_category": "humor",
     "used": {
       "hope": [
         57,
@@ -53,15 +53,17 @@
       "humor": [
         14,
         21,
-        22
+        22,
+        25
       ]
     }
   },
   "closing": {
-    "last_category": "advocacy",
+    "last_category": "quotes",
     "used": {
       "quotes": [
         17,
+        21,
         42,
         54,
         56,
