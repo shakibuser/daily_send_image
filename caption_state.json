@@ -21,7 +21,7 @@
     ]
   },
   "opening": {
-    "last_category": "humor",
+    "last_category": "reflective",
     "used": {
       "hope": [
         57,
@@ -46,6 +46,7 @@
         103
       ],
       "reflective": [
+        8,
         51,
         83,
         89
@@ -59,7 +60,7 @@
     }
   },
   "closing": {
-    "last_category": "quotes",
+    "last_category": "advocacy",
     "used": {
       "quotes": [
         17,
@@ -78,6 +79,7 @@
         32,
         45,
         52,
+        70,
         79,
         91
       ],
