@@ -21,7 +21,7 @@
     ]
   },
   "opening": {
-    "last_category": "retiree",
+    "last_category": "literary",
     "used": {
       "hope": [
         57,
@@ -34,7 +34,8 @@
         4,
         22,
         50,
-        61
+        61,
+        63
       ],
       "retiree": [
         3,
@@ -61,7 +62,7 @@
     }
   },
   "closing": {
-    "last_category": "quotes",
+    "last_category": "motivational",
     "used": {
       "quotes": [
         17,
@@ -89,6 +90,7 @@
         12,
         14,
         50,
+        52,
         59,
         67,
         69,
