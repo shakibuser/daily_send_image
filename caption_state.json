@@ -21,13 +21,14 @@
     ]
   },
   "opening": {
-    "last_category": "literary",
+    "last_category": "hope",
     "used": {
       "hope": [
         57,
         75,
         76,
         82,
+        96,
         101
       ],
       "literary": [
@@ -64,11 +65,12 @@
     }
   },
   "closing": {
-    "last_category": "motivational",
+    "last_category": "quotes",
     "used": {
       "quotes": [
         17,
         21,
+        27,
         42,
         54,
         56,
