@@ -21,7 +21,7 @@
     ]
   },
   "opening": {
-    "last_category": "literary",
+    "last_category": "humor",
     "used": {
       "hope": [
         57,
@@ -62,12 +62,13 @@
         21,
         22,
         25,
+        44,
         81
       ]
     }
   },
   "closing": {
-    "last_category": "advocacy",
+    "last_category": "motivational",
     "used": {
       "quotes": [
         17,
@@ -97,6 +98,7 @@
       "motivational": [
         12,
         14,
+        16,
         21,
         28,
         50,
